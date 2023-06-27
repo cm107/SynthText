@@ -24,14 +24,18 @@ from common import *
 import wget, tarfile
 import cv2
 
+if not hasattr(Image, 'Resampling'):  # Pillow<9.0
+    Image.Resampling = Image
+
 ## Define some configuration variables:
 NUM_IMG = -1  # no. of images to use for generation (-1 to use all available):
 INSTANCE_PER_IMAGE = 1  # no. of times to use the same image
-SECS_PER_IMG = 5  # max time per image in seconds
+SECS_PER_IMG = 20  # max time per image in seconds
 
 # path to the data-file, containing image, depth and segmentation:
 DATA_PATH = 'data'
-DB_FNAME = osp.join(DATA_PATH, 'dset.h5')
+# DB_FNAME = osp.join(DATA_PATH, 'dset.h5')
+DB_FNAME = osp.join(DATA_PATH, 'out-sample.h5')
 # url of the data (google-drive public file):
 DATA_URL = 'http://www.robots.ox.ac.uk/~ankush/data.tar.gz'
 OUT_FILE = 'results/SynthText.h5'

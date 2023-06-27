@@ -280,8 +280,8 @@ class RenderFont(object):
         locs = [None for i in range(len(text_arrs))]
         out_arr = np.zeros_like(back_arr)
         for i in order:            
-            ba = np.clip(back_arr.copy().astype(np.float), 0, 255)
-            ta = np.clip(text_arrs[i].copy().astype(np.float), 0, 255)
+            ba = np.clip(back_arr.copy().astype(np.float64), 0, 255)
+            ta = np.clip(text_arrs[i].copy().astype(np.float64), 0, 255)
             ba[ba > 127] = 1e8
             intersect = ssig.fftconvolve(ba,ta[::-1,::-1],mode='valid')
             safemask = intersect < 1e8
@@ -599,8 +599,14 @@ class TextSource(object):
         # probability to center-align a paragraph:
         self.center_para = 0.5
 
-    def is_cjk(self, char):
+    # def is_cjk(self, char):
+    #     return any([range["from"] <= ord(char) <= range["to"] for range in self.__ranges])
+
+    def _is_cjk(self, char):
         return any([range["from"] <= ord(char) <= range["to"] for range in self.__ranges])
+
+    def is_cjk(self, char):
+        return all([self._is_cjk(_char) for _char in char])
 
     def check_symb_frac(self, txt, f=0.35):
         """

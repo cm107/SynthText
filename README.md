@@ -28,25 +28,16 @@ Add support for chinese
 ![Japanese example 4](results/sample4.png "Synthetic Japanese Text Samples 4")
 
 
-The code in the `master` branch is for Python2. Python3 is supported in the `python3` branch.
-
-The main dependencies are:
-
-```
-pygame, opencv (version 3.3), PIL (Image), numpy, matplotlib, h5py, scipy
-```
+## Background
+This repository is a fork of [jinmingteo/SynthText](https://github.com/jinmingteo/SynthText). Changes were made to resolve some dependency issues as well as to add some scripts that can help you generate your own custom dataset, rather than just using the small sample. Note that [jinmingteo/SynthText](https://github.com/jinmingteo/SynthText) was forked from [gachiemchiep/SynthText](https://github.com/gachiemchiep/SynthText) to fix other bugs, which in turn was forked from the original [ankush-me/SynthText](https://github.com/ankush-me/SynthText) in order to create a way to generate a Japanese version of the SynthText dataset. If you can't find what you are looking for here, it may be useful to refer to the other forks as well.
 
 ## The main differences
-
-1. Use opencv 3.3 instead of opencv 2.4
+1. Use newer version of opencv
 2. Use nltk to parse language (eng, jpn)
 
 ## How to use this source
-
 ### Preparation
-
 Put your text data and font as follow
-
 ```
 data
 ├── dset.h5
@@ -65,10 +56,31 @@ data
 ```
 
 ### Install dependencies
-
 ```
 # For japanese
 sudo apt-get install libmecab2 libmecab-dev mecab mecab-ipadic mecab-ipadic-utf8 mecab-utils
+```
+
+### Prepare your python environment
+You can use whatever python version management system you want, but I prefer to use [pyenv](https://github.com/pyenv/pyenv).
+
+1. Install [pyenv](https://github.com/pyenv/pyenv)
+2. Install Python 3.6.5
+* Note: Using Python 3.7+ will cause issues when trying to install pygame, so don't do that.
+```bash
+pyenv install 3.6.5
+pyenv global 3.6.5
+```
+3. Create your virtual environment, and then activate it.
+```bash
+python -m pip install virtualenv
+python -m virtualenv venv
+source venv/bin/activate
+```
+4. Install the python dependencies.
+* Note: The code in this repo may stop working if you change the versions of any of the dependencies. In particular, newer versions of pygame have been confirmed to cause problems with the bounding box annotations.
+```bash
+python -m pip install -r requirements.txt
 ```
 
 ### Generate font model and char model
@@ -80,7 +92,24 @@ mv char_freq.cp data/models/
 mv font_px2pt.cp data/models/
 ```
 
-### Then go to next
+### Download the background data
+You can find the background data used for creating the SynthText dataset in [this torrent](https://academictorrents.com/details/2dba9518166cbd141534cbf381aa3e99a087e83c).
+
+### Generate a sample
+```bash
+python create_sample.py --dataDir path/to/downloaded/dataDir --out where/you/want/to/save/sample
+```
+
+### Generate the dataset
+Note: You may want to adjust some of the parameters in the script itself.
+```bash
+python viz.py --lang JPN
+```
+
+### Visualize Dataset
+```bash
+python read_results.py --datasetPath path/to/SynthText.h5 --visDump path/to/output/vis/dump
+```
 
 # SynthText
 Code for generating synthetic text images as described in ["Synthetic Data for Text Localisation in Natural Images", Ankush Gupta, Andrea Vedaldi, Andrew Zisserman, CVPR 2016](http://www.robots.ox.ac.uk/~vgg/data/scenetext/).
