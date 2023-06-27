@@ -103,7 +103,7 @@ python create_sample.py --dataDir path/to/downloaded/dataDir --out where/you/wan
 ### Generate the dataset
 Note: You may want to adjust some of the parameters in the script itself.
 ```bash
-python viz.py --lang JPN
+python gen.py --lang JPN
 ```
 
 ### Visualize Dataset
