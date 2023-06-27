@@ -2,6 +2,7 @@ import os
 import glob
 import h5py
 from PIL import Image, ImageDraw
+from tqdm import tqdm
 import argparse
 
 def get_args() -> argparse.Namespace:
@@ -35,7 +36,8 @@ def main(args: argparse.Namespace):
     os.makedirs(args.visDump, exist_ok=True)
 
     db = h5py.File('results/SynthText.h5', 'r')
-    for i, key in enumerate(db['data'].keys()):
+    total = len(db['data'].keys()) if args.numImages is None else min(len(db['data'].keys()), args.numImages)
+    for i, key in tqdm(enumerate(db['data'].keys()), desc='Creating visualizations', unit='image(s)', leave=True, total=total):
         if args.numImages is not None and i >= args.numImages:
             break
 
@@ -64,3 +66,7 @@ def main(args: argparse.Namespace):
                 draw.line(_wordBB[idx0].tolist() + _wordBB[idx1].tolist(), fill=(0,0,255), width=2)
 
         img.save(f"{args.visDump}/{basename}.png")
+
+if __name__ == '__main__':
+    args = get_args()
+    main(args)
